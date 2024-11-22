@@ -81,13 +81,13 @@ class Net(nn.Module):
         super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
-        self.lstm = GRU_batchfirst(input_size=input_size, hidden_size=hidden_size)
+        self.gru = GRU_batchfirst(input_size=input_size, hidden_size=hidden_size)
         self.linear = nn.Linear(hidden_size, output_size)
         self.activation = nn.Sigmoid()
 
     def forward(self, x):
         batch_size, _, _ = x.size()
-        h, h_t = self.lstm(x)
+        h, h_t = self.gru(x)
         y = self.activation(h)
 
         y = y.view(-1, self.hidden_size)  # [batch_size * seq_size, hidden_size]
@@ -114,7 +114,7 @@ def getdata():
 
 
 #####################train#################################
-def train_LSTM(data):
+def train_GRU(data):
     model = Net(input_size, hidden_size)
     print('model:\n', model)
     criterion = nn.MSELoss()
@@ -144,7 +144,7 @@ def train_LSTM(data):
     plt.plot(l, 'r')
     plt.xlabel('Times')
     plt.ylabel('loss')
-    plt.title('LSTM - Loss function decline curve')
+    plt.title('GRU - Loss function decline curve')
     plt.show()
 
     return model
@@ -152,7 +152,7 @@ def train_LSTM(data):
 
 #############################Prediction#########################################
 
-def LSTM_pre(model, data):
+def GRU_pre(model, data):
     data_test = data[19:29]
     data_test = torch.tensor(np.expand_dims(data_test, axis=0), dtype=torch.float32)
 
@@ -178,14 +178,14 @@ def LSTM_pre(model, data):
     ax.set_ylim(0, 10)
     ax.set_zlabel('Z')
     ax.set_zlim(0, 4)
-    plt.title("LSTM track prediction")
+    plt.title("GRU track prediction")
     plt.show()
 
 
 if __name__ == '__main__':
     data = getdata()
     start = datetime.datetime.now()
-    model = train_LSTM(data)
+    model = train_GRU(data)
     end = datetime.datetime.now()
     print('The training time: %s' % str(end - start))
-    LSTM_pre(model, data)
+    GRU_pre(model, data)
