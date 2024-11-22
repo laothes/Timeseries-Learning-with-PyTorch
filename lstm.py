@@ -79,7 +79,7 @@ class LSTM_batchfirst(nn.Module):
 
         hidden_seq = torch.cat(hidden_seq, dim=Dim.batch) # [seq_size, batch_size, hidden_size]
         hidden_seq = hidden_seq.transpose(Dim.batch, Dim.seq).contiguous() # [batch_size, seq_size, hidden_size]
-        return hidden_seq
+        return hidden_seq, (h_t, c_t)
 
 class Net(nn.Module):
     def __init__(self, input_size, hidden_size):
@@ -92,7 +92,7 @@ class Net(nn.Module):
 
     def forward(self,x):
         batch_size, _, _ = x.size()
-        h = self.lstm(x)
+        h, (h_t, c_t) = self.lstm(x)
         y = self.activation(h)
 
         y = y.view(-1, self.hidden_size) # [batch_size * seq_size, hidden_size]
