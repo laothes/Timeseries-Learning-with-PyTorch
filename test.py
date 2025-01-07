@@ -1,10 +1,16 @@
+import numpy as np
+from timeit import default_timer as timer
+
 import torch
+import torch.optim as optim
+from torch.utils.data import DataLoader
 
-# 加载数据
-test = torch.load('./data/Preprocessed Epilepsy dataset/test.pt')
+train = torch.load('data/Epilepsy/train.pt', weights_only=True)
+print(train['samples'].shape[-1])
 
-# 查看数据内容
-for i,j in test.items():
-    print(i)
-    print(j.shape)
-    print('--------------------------------')
+train = torch.utils.data.TensorDataset(train['samples'], train['labels'])
+trainload = DataLoader(train, batch_size=256, shuffle=True)
+for batch_idx, (sample, target) in enumerate(trainload):
+    print(batch_idx)
+    print(sample)
+    print(target)
