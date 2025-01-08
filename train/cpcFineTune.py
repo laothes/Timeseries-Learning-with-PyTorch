@@ -117,7 +117,7 @@ def fine_tuning(train, val, channels, spk_num, n_warmup_steps, batch_size, epoch
         train_ft(model, train_loader, optimizer, device, epoch)
         val_loss = val_ft(model, val_loader, device)
         if val_loss < best_loss:
-            best_acc = max(val_loss, best_loss)
+            best_loss = max(val_loss, best_loss)
             torch.save(model.state_dict(), model_save_path)
             best_epoch = epoch
 

@@ -1,16 +1,18 @@
-import numpy as np
-from timeit import default_timer as timer
+import argparse
+import logging
 
-import torch
-import torch.optim as optim
-from torch.utils.data import DataLoader
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(message)s')
 
-train = torch.load('data/Epilepsy/train.pt', weights_only=True)
-print(train['samples'].shape[-1])
+def main():
+    parser = argparse.ArgumentParser(description="Example parser script.")
+    parser.add_argument("--name", type=str, help="Your name", required=True)
+    parser.add_argument("--age", type=int, help="Your age", required=False)
+    args = parser.parse_args()
 
-train = torch.utils.data.TensorDataset(train['samples'], train['labels'])
-trainload = DataLoader(train, batch_size=256, shuffle=True)
-for batch_idx, (sample, target) in enumerate(trainload):
-    print(batch_idx)
-    print(sample)
-    print(target)
+    logging.info(f"Hello, {args.name}!")
+    if args.age:
+        logging.info(f"You are {args.age} years old.")
+
+if __name__ == "__main__":
+    main()
