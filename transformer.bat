@@ -20,7 +20,7 @@ python train/transformerTrain.py ^
     --learning-rate 0.0001 ^
     --epochs 100 ^
     --save-model ^
-    --checkpoint-dir ../trained_models
+    --checkpoint-dir trained_models
 
 REM Deactivate the virtual environment if necessary
 REM deactivate

@@ -29,7 +29,7 @@ class TransformerClassifier(nn.Module):
         x = self.encoder(x)
         x = self.transform(x)  # x: [batch, seq_len, d_model]
         x = self.fc_out(x)  # x: [batch, seq_len, output_size]
-        
+
         # Apply pooling: Take only the first token (if using [CLS] token for classification)
         x = x[:, 0, :] # x: [batch, seq_len]
         return self.dropout(x)
