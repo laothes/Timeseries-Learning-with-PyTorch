@@ -3,36 +3,17 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 import numpy as np
 from src.moco import MoCo
+from src.data_augment import *
 
 
 def generate_synthetic_data(batch_size=256, seq_len=200, channels=16):
-    """改进的数据生成函数"""
-    # 生成基础序列
     base = torch.randn(batch_size, channels, seq_len)
+    view1 = RandomMask(base.clone(), 0.3)
+    view2 = CutOut(base.clone(), 0.3)
+    view3 = JitterScale(base.clone())
+    view4 = PermutationJitter(base.clone(), 20, 10)
 
-    # 创建更复杂的增强视图
-    def augment(x):
-        # 随机时间偏移
-        shift = torch.randint(-10, 11, (1,)).item()
-        if shift > 0:
-            x = torch.cat([x[:, :, shift:], x[:, :, :shift]], dim=2)
-        elif shift < 0:
-            x = torch.cat([x[:, :, shift:], x[:, :, :shift]], dim=2)
-
-        # 随机振幅缩放
-        scale = 0.8 + 0.4 * torch.rand(1).item()  # 0.8-1.2之间的随机缩放
-        x = scale * x
-
-        # 添加高斯噪声
-        noise_scale = 0.05 * torch.rand(1).item()
-        x = x + noise_scale * torch.randn_like(x)
-
-        return x
-
-    view1 = augment(base)
-    view2 = augment(base)
-
-    return view1, view2
+    return base, base
 
 
 def compute_accuracy(logits, labels):
