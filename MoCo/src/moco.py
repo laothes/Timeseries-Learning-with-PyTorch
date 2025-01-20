@@ -132,10 +132,10 @@ class MoCo(nn.Module):
         l_pos = torch.einsum("nc,nc->n", [q_c, k_c]).unsqueeze(-1)
         # l_pos = q_c.unsqueeze(1) @ k_c.unsqueeze(2) -> [batch, 1, d_model] @ [batch, d_model, 1] -> [batch, 1]
 
-        l_neg = torch.einsum("nc,ck->nk", [q_c, self.queue.clone().detach()]) # [batch, K]
+        l_neg = torch.einsum("nc,ck->nk", [q_c, self.queue.clone().detach()])  # [batch, K]
 
-        logits = torch.cat([l_pos, l_neg], dim=1) # [batch, 1+K]
-        logits /= self.T # apply temperature
+        logits = torch.cat([l_pos, l_neg], dim=1)  # [batch, 1+K]
+        logits /= self.T  # apply temperature
 
         # labels: positive key indicators
         labels = torch.zeros(logits.shape[0], dtype=torch.long).cuda()
